@@ -44,14 +44,13 @@ def test_missing_table_and_quality_flags():
     assert missing_df.loc["age", "missing_count"] == 1
 
     summary = summarize_dataset(df)
-    flags = compute_quality_flags(summary, missing_df)
+    flags = compute_quality_flags(df, summary, missing_df)
     assert 0.0 <= flags["quality_score"] <= 1.0
 
 
 def test_correlation_and_top_categories():
     df = _sample_df()
     corr = correlation_matrix(df)
-    # корреляция между age и height существует
     assert "age" in corr.columns or corr.empty is False
 
     top_cats = top_categories(df, max_columns=5, top_k=2)
@@ -59,3 +58,38 @@ def test_correlation_and_top_categories():
     city_table = top_cats["city"]
     assert "value" in city_table.columns
     assert len(city_table) <= 2
+
+
+def test_compute_quality_flags_new_heuristics():
+    """Проверка новых эвристик: постоянные колонки и много нулей."""
+    df = pd.DataFrame({
+        "id": [1, 2, 3],
+        "status": ["active", "active", "active"],
+        "revenue": [0, 0, 1000],
+        "zeros": [0, 0, 0],
+    })
+
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(df, summary, missing_df)
+
+    assert flags["has_constant_columns"] is True
+    assert flags["has_many_zero_values"] is True
+
+    assert flags["quality_score"] < 1.0
+
+
+def test_compute_quality_flags_no_constant_or_zeros():
+    """Проверка отсутствия флагов на "чистом" датасете."""
+    df = pd.DataFrame({
+        "a": [1, 2, 3],
+        "b": ["x", "y", "z"],
+        "c": [10, 20, 30],
+    })
+
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(df, summary, missing_df)
+
+    assert flags["has_constant_columns"] is False
+    assert flags["has_many_zero_values"] is False

@@ -170,14 +170,20 @@ def top_categories(
     return result
 
 
-def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> Dict[str, Any]:
+def compute_quality_flags(
+    df: pd.DataFrame,
+    summary: DatasetSummary,
+    missing_df: pd.DataFrame
+) -> Dict[str, Any]:
     """
     Простейшие эвристики «качества» данных:
     - слишком много пропусков;
     - подозрительно мало строк;
-    и т.п.
+    - постоянные колонки;
+    - числовые колонки с высокой долей нулей.
     """
     flags: Dict[str, Any] = {}
+
     flags["too_few_rows"] = summary.n_rows < 100
     flags["too_many_columns"] = summary.n_cols > 100
 
@@ -185,12 +191,38 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
     flags["max_missing_share"] = max_missing_share
     flags["too_many_missing"] = max_missing_share > 0.5
 
-    # Простейший «скор» качества
+    # Эвристика 1
+    has_constant_columns = any(
+        col.unique == 1 and col.non_null > 0 for col in summary.columns
+    )
+    flags["has_constant_columns"] = has_constant_columns
+
+    # Эвристика 2
+    zero_threshold = 0.9  # 90%
+    has_many_zero_values = False
+    numeric_cols = [col.name for col in summary.columns if col.is_numeric]
+    for col_name in numeric_cols:
+        s = df[col_name]
+        non_null_count = s.notna().sum()
+        if non_null_count == 0:
+            continue
+        zero_count = (s == 0).sum()
+        zero_share = zero_count / len(df)
+        if zero_share > zero_threshold:
+            has_many_zero_values = True
+            break
+    flags["has_many_zero_values"] = has_many_zero_values
+
+    # Расчёт quality_score
     score = 1.0
-    score -= max_missing_share  # чем больше пропусков, тем хуже
+    score -= max_missing_share
     if summary.n_rows < 100:
         score -= 0.2
     if summary.n_cols > 100:
+        score -= 0.1
+    if has_constant_columns:
+        score -= 0.1
+    if has_many_zero_values:
         score -= 0.1
 
     score = max(0.0, min(1.0, score))
