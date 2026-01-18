@@ -1,0 +1,32 @@
+{
+  "Dummy": {
+    "accuracy": 0.6766666666666666,
+    "f1_score": 0.0,
+    "roc_auc": 0.5
+  },
+  "LogisticRegression": {
+    "accuracy": 0.8275,
+    "f1_score": 0.7076271186440678,
+    "roc_auc": 0.8746905312071505
+  },
+  "DecisionTree": {
+    "accuracy": 0.8675,
+    "f1_score": 0.7857142857142857,
+    "roc_auc": 0.8981907184754457
+  },
+  "RandomForest": {
+    "accuracy": 0.9270833333333334,
+    "f1_score": 0.8816768086544963,
+    "roc_auc": 0.9665023837032147
+  },
+  "AdaBoost": {
+    "accuracy": 0.84625,
+    "f1_score": 0.7432150313152401,
+    "roc_auc": 0.9069911380833883
+  },
+  "Stacking": {
+    "accuracy": 0.93125,
+    "f1_score": 0.89137590520079,
+    "roc_auc": 0.9674764168909655
+  }
+}
