@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from time import perf_counter
+from typing import Any
 
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -75,6 +76,24 @@ class QualityResponse(BaseModel):
     dataset_shape: dict[str, int] | None = Field(
         default=None,
         description="Размеры датасета: {'n_rows': ..., 'n_cols': ...}, если известны",
+    )
+
+
+class QualityFlagsResponse(BaseModel):
+    """Ответ с полным набором флагов качества."""
+
+    flags: dict[str, Any] = Field(
+        ...,
+        description="Полный набор флагов качества, включая числовые значения",
+    )
+    latency_ms: float = Field(
+        ...,
+        ge=0.0,
+        description="Время обработки запроса на сервере, миллисекунды",
+    )
+    dataset_shape: dict[str, int] = Field(
+        ...,
+        description="Размеры датасета: {'n_rows': ..., 'n_cols': ...}",
     )
 
 
@@ -171,13 +190,6 @@ def quality(req: QualityRequest) -> QualityResponse:
     summary="Оценка качества по CSV-файлу с использованием EDA-ядра",
 )
 async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
-    """
-    Эндпоинт, который принимает CSV-файл, запускает EDA-ядро
-    (summarize_dataset + missing_table + compute_quality_flags)
-    и возвращает оценку качества данных.
-
-    Именно это по сути связывает S03 (CLI EDA) и S04 (HTTP-сервис).
-    """
 
     start = perf_counter()
 
@@ -198,7 +210,7 @@ async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
     # Используем EDA-ядро из S03
     summary = summarize_dataset(df)
     missing_df = missing_table(df)
-    flags_all = compute_quality_flags(summary, missing_df)
+    flags_all = compute_quality_flags(df, summary, missing_df)
 
     # Ожидаем, что compute_quality_flags вернёт quality_score в [0,1]
     score = float(flags_all.get("quality_score", 0.0))
@@ -240,5 +252,59 @@ async def quality_from_csv(file: UploadFile = File(...)) -> QualityResponse:
         message=message,
         latency_ms=latency_ms,
         flags=flags_bool,
+        dataset_shape={"n_rows": n_rows, "n_cols": n_cols},
+    )
+
+
+# ---------- НОВЫЙ ЭНДПОИНТ: /quality-flags-from-csv ----------
+
+
+@app.post(
+    "/quality-flags-from-csv",
+    response_model=QualityFlagsResponse,
+    tags=["quality"],
+    summary="Полный набор флагов качества из CSV-файла",
+)
+async def quality_flags_from_csv(file: UploadFile = File(...)) -> QualityFlagsResponse:
+    """
+    Принимает CSV-файл и возвращает полный набор флагов качества,
+    включая все эвристики из HW03.
+    
+    Включает как булевы флаги, так и числовые значения (например, quality_score).
+    """
+    
+    start = perf_counter()
+    
+    if file.content_type not in ("text/csv", "application/vnd.ms-excel", "application/octet-stream"):
+        raise HTTPException(status_code=400, detail="Ожидается CSV-файл (content-type text/csv).")
+    
+    try:
+        df = pd.read_csv(file.file)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Не удалось прочитать CSV: {exc}")
+    
+    if df.empty:
+        raise HTTPException(status_code=400, detail="CSV-файл не содержит данных (пустой DataFrame).")
+    
+    # Используем функции из HW03
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags_all = compute_quality_flags(df, summary, missing_df)
+    
+    latency_ms = (perf_counter() - start) * 1000.0
+    
+    # Получаем размеры датасета
+    n_rows = summary.n_rows if hasattr(summary, 'n_rows') else df.shape[0]
+    n_cols = summary.n_cols if hasattr(summary, 'n_cols') else df.shape[1]
+    
+    print(
+        f"[quality-flags-from-csv] filename={file.filename!r} "
+        f"n_rows={n_rows} n_cols={n_cols} "
+        f"flags_count={len(flags_all)} latency_ms={latency_ms:.1f} ms"
+    )
+    
+    return QualityFlagsResponse(
+        flags=flags_all,
+        latency_ms=latency_ms,
         dataset_shape={"n_rows": n_rows, "n_cols": n_cols},
     )
