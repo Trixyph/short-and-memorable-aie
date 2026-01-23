@@ -1,51 +1,41 @@
 {
-  "S07-hw-dataset-01.csv": {
+  "dataset_01": {
     "KMeans": {
       "silhouette": 0.5216395622404242,
-      "davies_bouldin": 0.6853295219054459,
-      "calinski_harabasz": 11786.95462267153,
-      "n_clusters": 2,
-      "inertia": 48425.906976593986
+      "davies_bouldin": 0.6853295219054456,
+      "calinski_harabasz": 11786.954622671532
     },
     "DBSCAN": {
-      "silhouette": 0.3953852076613438,
-      "davies_bouldin": 1.1834483229526016,
-      "calinski_harabasz": 8646.072568463878,
-      "noise_ratio": 0.08,
-      "n_noise": 960,
-      "n_clusters": 5
+      "silhouette": 0.28312477366901373,
+      "davies_bouldin": 0.946760657362018,
+      "calinski_harabasz": 4301.220982297523,
+      "noise_ratio": 0.033666666666666664
     }
   },
-  "S07-hw-dataset-02.csv": {
+  "dataset_02": {
     "KMeans": {
-      "silhouette": 0.3068610017701601,
-      "davies_bouldin": 1.3234721699867644,
-      "calinski_harabasz": 3573.3933329348392,
-      "n_clusters": 2,
-      "inertia": 16588.501032295582
+      "silhouette": 0.27004522856451274,
+      "davies_bouldin": 1.2226592908750664,
+      "calinski_harabasz": 3082.272074544635
     },
-    "AgglomerativeClustering": {
-      "silhouette": 0.5213161442555723,
-      "davies_bouldin": 0.34186056281280663,
-      "calinski_harabasz": 7.184330110542804,
-      "n_clusters": 2
+    "DBSCAN": {
+      "silhouette": 0.13818888319194383,
+      "davies_bouldin": 0.9019700377403743,
+      "calinski_harabasz": 69.33168604795445,
+      "noise_ratio": 0.022625
     }
   },
-  "S07-hw-dataset-03.csv": {
+  "dataset_03": {
     "KMeans": {
-      "silhouette": 0.31554470037825183,
+      "silhouette": 0.3155447003782518,
       "davies_bouldin": 1.1577256320598661,
-      "calinski_harabasz": 6957.162639510166,
-      "n_clusters": 3,
-      "inertia": 31123.461050187827
+      "calinski_harabasz": 6957.162639510167
     },
     "DBSCAN": {
-      "silhouette": 0.15750294746532023,
-      "davies_bouldin": 0.8967629176085022,
-      "calinski_harabasz": 1884.6935194599835,
-      "noise_ratio": 0.27946666666666664,
-      "n_noise": 4192,
-      "n_clusters": 14
+      "silhouette": 0.14243088104506604,
+      "davies_bouldin": 1.3932351326290713,
+      "calinski_harabasz": 1640.790703583512,
+      "noise_ratio": 0.0324
     }
   }
 }
