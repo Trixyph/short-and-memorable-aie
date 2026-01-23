@@ -1,20 +1,20 @@
 {
   "DecisionTree": {
-    "best_params": "{'criterion': 'entropy', 'max_depth': 10, 'min_samples_leaf': 10}",
-    "best_score": 0.9086652807374433,
-    "cv_scheme": "5-fold CV",
+    "best_params": "{'ccp_alpha': 0.0, 'max_depth': None, 'max_features': None, 'min_samples_leaf': 10, 'min_samples_split': 2}",
+    "best_score": 0.8981604578772969,
+    "cv_scheme": "3-fold CV",
     "scoring": "roc_auc"
   },
   "RandomForest": {
-    "best_params": "{'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'n_estimators': 200}",
-    "best_score": 0.9686855614191023,
-    "cv_scheme": "5-fold CV",
+    "best_params": "{'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 3, 'n_estimators': 100}",
+    "best_score": 0.9656423930708496,
+    "cv_scheme": "3-fold CV",
     "scoring": "roc_auc"
   },
   "AdaBoost": {
-    "best_params": "{'learning_rate': 1.0, 'n_estimators': 200}",
-    "best_score": 0.9101293079403332,
-    "cv_scheme": "5-fold CV",
+    "best_params": "{'learning_rate': 1.0, 'n_estimators': 100}",
+    "best_score": 0.9034406250813519,
+    "cv_scheme": "3-fold CV",
     "scoring": "roc_auc"
   }
 }
