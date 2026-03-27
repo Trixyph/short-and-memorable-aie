@@ -1,0 +1,22 @@
+{
+  "experiment_id": "E4",
+  "dataset": "KMNIST",
+  "seed": 42,
+  "model_params": {
+    "input_size": 784,
+    "hidden_sizes": [
+      256,
+      128,
+      64
+    ],
+    "num_classes": 10,
+    "dropout_prob": 0.0,
+    "use_batchnorm": true
+  },
+  "optimizer": "Adam",
+  "lr": 0.001,
+  "weight_decay": 0,
+  "early_stopping_patience": 4,
+  "best_val_accuracy": 0.8879166666666667,
+  "test_accuracy": 0.8808
+}

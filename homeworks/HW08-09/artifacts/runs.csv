@@ -1,0 +1,8 @@
+experiment_id,dataset,seed,model_summary,optimizer,lr,momentum,weight_decay,epochs_trained,best_val_accuracy,best_val_loss
+E1,KMNIST,42,"hidden=[256,128,64], no dropout, no BN",Adam,0.001,,0.0,20,0.8954166666666666,0.3074488485256831
+E2,KMNIST,42,"hidden=[256,128,64], dropout=0.3, no BN",Adam,0.001,,0.0,20,0.8923333333333333,0.3084598085085551
+E3,KMNIST,42,"hidden=[256,128,64], BN, no dropout",Adam,0.001,,0.0,20,0.893,0.3077349934577942
+E4,KMNIST,42,"hidden=[256,128,64], BN, no dropout (лучший из E2/E3)",Adam,0.001,,0.0,9,0.8879166666666667,0.31485196101665497
+O1,KMNIST,42,"hidden=[256,128,64], BN, no dropout (лучший из E2/E3)",Adam,0.1,,0.0,8,0.8783333333333333,0.35187933206558225
+O2,KMNIST,42,"hidden=[256,128,64], BN, no dropout (лучший из E2/E3)",Adam,1e-05,,0.0,8,0.8398333333333333,0.6958726563453674
+O3,KMNIST,42,"hidden=[256,128,64], BN, no dropout (лучший из E2/E3)",SGD,0.01,0.9,0.0001,15,0.8911666666666667,0.3078353914817174
