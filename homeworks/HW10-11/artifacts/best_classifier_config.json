@@ -1,0 +1,14 @@
+{
+  "model": "resnet18",
+  "pretrained": true,
+  "freeze_layers": ["layer1", "layer2"],
+  "trainable_layers": ["layer3", "layer4", "fc"],
+  "optimizer": "SGD",
+  "learning_rate": 0.0001,
+  "momentum": 0.9,
+  "weight_decay": 0.0001,
+  "batch_size": 64,
+  "loss": "CrossEntropyLoss",
+  "augmentation": true,
+  "seed": 42
+}

@@ -1,0 +1,5 @@
+experiment,val_accuracy,test_accuracy,train_loss,val_loss,epochs
+C1,0.62,0.60,1.15,1.42,30
+C2,0.68,0.66,0.95,1.12,30
+C3,0.82,0.80,0.52,0.68,30
+C4,0.89,0.87,0.38,0.45,30
